@@ -39,6 +39,14 @@ AppAsset::register($this);
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
     ];
+    if (
+        isset(Yii::$app->user->identity->status) AND
+        Yii::$app->user->identity->status > 9
+    ) {
+        $menuItems[] = [
+            'label' => 'Админка', 'url' => Yii::$app->request->hostInfo . '/backend/web/'
+        ];
+    }
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
     }
@@ -52,7 +60,7 @@ AppAsset::register($this);
     } else {
         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                'Разлогиниться (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout text-decoration-none']
             )
             . Html::endForm();

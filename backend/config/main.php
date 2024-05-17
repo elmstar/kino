@@ -1,6 +1,6 @@
 <?php
 $params = array_merge(
-    //require __DIR__ . '/main-local.php',
+    require __DIR__ . '/main-local.php',
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
     require __DIR__ . '/params.php',
@@ -10,6 +10,7 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
+    'name'  => 'Кино Админка',
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [],
@@ -45,7 +46,21 @@ return [
             'rules' => [
             ],
         ],
-
+        'assetManager' => [
+            'bundles' => [
+                'marqu3s\summernote\SummernoteAsset'   => [
+                    'css' => [
+                        'summernote-bs5.css'
+                    ],
+                    'js' => [
+                        'summernote-bs5.js'
+                    ],
+                    'depends' => [
+                        'yii\bootstrap\BootstrapPluginAsset',
+                    ]
+                ]
+            ]
+        ]
     ],
     'params' => $params,
 ];
