@@ -1,11 +1,11 @@
 <?php
 
 use yii\helpers\Html;
-use yii\web\Response;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Films $model */
+/** @var backend\models\Film $model */
 
 $this->params['breadcrumbs'][] = ['label' => 'Фильмы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->context->title;
@@ -35,13 +35,14 @@ $this->params['breadcrumbs'][] = $this->context->title;
                 'attribute' => 'photo',
                 'format'    => 'raw',
                 'value'     => function ($data) {
-                    $part = 'images/'.$data->id.'.'.$data->photo;
-                    if (file_exists($part)) {
+                    $part = Url::to('@backend/web/upload/film/'.$data->id.'.'.$data->photo);
+                    $url = Url::to('@web/upload/film/'.$data->id.'.'.$data->photo);
+                    if (@fopen($part, "r")) {
                         return '<img 
-                                src="'.Yii::$app->request->hostInfo.'/'.$part.'"
+                                src="'.$url.'"
                                 style="width:300px;"
                             >';
-                    }
+                    } else return 'Файл отсутствует';
                 }
             ],
             'description:ntext',

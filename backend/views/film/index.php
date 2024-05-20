@@ -1,13 +1,13 @@
 <?php
 
-use backend\models\Films;
+use backend\models\Film;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var backend\models\FilmsSearch $searchModel */
+/** @var backend\models\FilmSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 
@@ -40,13 +40,10 @@ $this->params['breadcrumbs'][] = $this->context->title;
                 'content'   => function ($data) {
                     return $data->age . '+';
                 },
-                'filter' => Films::getDropDownListAge()
+                'filter' => Film::getDropDownListAge()
             ],
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Films $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                'class' => ActionColumn::class,
             ],
         ],
     ]); ?>

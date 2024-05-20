@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
- * This is the model class for table "films".
+ * This is the model class for table "film".
  *
  * @property int $id
  * @property string|null $title
@@ -15,9 +15,9 @@ use yii\web\UploadedFile;
  * @property string|null $description
  * @property int|null $age
  *
- * @property Sessions[] $sessions
+ * @property Session[] $session
  */
-class Films extends \yii\db\ActiveRecord
+class Film extends \yii\db\ActiveRecord
 {
     public $imageFile;
     /**
@@ -25,7 +25,7 @@ class Films extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'films';
+        return 'film';
     }
 
     /**
@@ -34,9 +34,13 @@ class Films extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['age', 'title', 'duration'], 'required'],
             [['description'], 'string'],
-            [['age', 'duration'], 'integer'],
-            [['title'], 'string', 'max' => 128],
+            [['title'], 'unique'],
+            [['title'],'string', 'max' => 128],
+            [['age'], 'integer'],
+            [['duration'], 'integer', 'min' => 0, 'max' => 300],
+            [['age'], 'integer', 'max' => 21],
             [['imageFile'],'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpe'],
         ];
     }
@@ -65,7 +69,7 @@ class Films extends \yii\db\ActiveRecord
     public function upload()
     {
         if ($this->validate()) {
-            $this->imageFile->saveAs('../../common/images/' . $this->id . '.' . $this->imageFile->extension);
+            $this->imageFile->saveAs('../../frontend/web/upload/film/' . $this->id . '.' . $this->imageFile->extension);
             $this->photo = $this->imageFile->extension;
             $this->imageFile = '';
             $this->save();
@@ -76,13 +80,13 @@ class Films extends \yii\db\ActiveRecord
     }
 
      /**
-     * Gets query for [[Sessions]].
+     * Gets query for [[Session]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getSessions()
     {
-        return $this->hasMany(Sessions::class, ['film_id' => 'id']);
+        return $this->hasMany(Session::class, ['film_id' => 'id']);
     }
     // ------------------------ Данные для выпадающих списков (DropDownList) ----------------------
     public static function getDropDownListAge()
@@ -98,9 +102,8 @@ class Films extends \yii\db\ActiveRecord
     }
     public static function getDropDownListFilms()
     {
-        $rows = self::find()
+        return ArrayHelper::map(self::find()
             ->select(['id','title'])
-            ->asArray()->all();
-        return ArrayHelper::map($rows, 'id', 'title');
+            ->asArray()->all(), 'id', 'title');
     }
 }

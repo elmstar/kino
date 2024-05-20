@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use backend\models\SessionsSearch;
+use backend\models\SessionSearch;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -76,7 +76,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SessionsSearch();
+        $searchModel = new SessionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [

@@ -1,5 +1,5 @@
 <?php
-use backend\models\Sessions;
+use backend\models\Session;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var yii\web\View $this */
-/** @var backend\models\SessionsSearch $searchModel */
+/** @var backend\models\SessionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 ?>
@@ -25,14 +25,14 @@ use yii\widgets\Pjax;
             [
                 'attribute' =>  'film.photo',
                 'content'   => function ($data) {
-                    if (isset($data->film->id) AND isset($data->film->photo)) {
-                        $part = 'images/'.$data->film->id.'.'.$data->film->photo;
+                    if (isset($data->film->id) && isset($data->film->photo)) {
+                        $part = 'upload/film/'.$data->film->id.'.'.$data->film->photo;
                         if (file_exists($part)) {
                             return '<img 
                                 src="'.Yii::$app->request->hostInfo.'/'.$part.'"
                                 style="width:300px;"
                             >';
-                        }
+                        } else return 'Фото отсутствует';
                     }
                 }
             ],

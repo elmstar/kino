@@ -2,10 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use marqu3s\summernote\Summernote;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Films $model */
+/** @var backend\models\Film $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -15,8 +14,6 @@ use marqu3s\summernote\Summernote;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?php // $form->field($model, 'photo')->textInput(['maxlength' => true])
-    ?>
     <?= $form->field($model, 'imageFile')->fileInput() ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
@@ -24,7 +21,7 @@ use marqu3s\summernote\Summernote;
     <?= $form->field($model, 'duration')->input('number') ?>
 
     <?= $form->field($model, 'age')->dropDownList(
-        \backend\models\Films::getDropDownListAge(),
+        \backend\models\Film::getDropDownListAge(),
         ['prompt' => 'Выберите возрастное ограничение']
     ) ?>
 

@@ -5,23 +5,28 @@ namespace backend\models;
 use Yii;
 
 /**
- * This is the model class for table "sessions".
+ * This is the model class for table "session".
  *
  * @property int $id
  * @property int $film_id
  * @property string|null $datetime
  * @property float|null $price
  *
- * @property Films $film
+ * @property Film $film
  */
-class Sessions extends \yii\db\ActiveRecord
+class Session extends \yii\db\ActiveRecord
 {
+    /**
+     * Промежуток между сеансами в секундах
+     */
+    const SESSION_INTERVAL = 1800;
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'sessions';
+        return 'session';
     }
 
     /**
@@ -30,11 +35,11 @@ class Sessions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['film_id'], 'required'],
+            [['film_id', 'datetime', 'price'], 'required'],
             [['film_id'], 'integer'],
             [['datetime'], 'safe'],
-            [['price'], 'number'],
-            [['film_id'], 'exist', 'skipOnError' => true, 'targetClass' => Films::class, 'targetAttribute' => ['film_id' => 'id']],
+            [['price'], 'number', 'numberPattern' => '/^\s*[-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
+            [['film_id'], 'exist', 'skipOnError' => true, 'targetClass' => Film::class, 'targetAttribute' => ['film_id' => 'id']],
         ];
     }
 
@@ -50,6 +55,12 @@ class Sessions extends \yii\db\ActiveRecord
             'price' => 'Стоимость',
         ];
     }
+    public function attributeHints()
+    {
+        return [
+            'price' => 'В качестве разделителя дробной части используется точка'
+        ];
+    }
 
     /**
      * Gets query for [[Film]].
@@ -58,7 +69,7 @@ class Sessions extends \yii\db\ActiveRecord
      */
     public function getFilm()
     {
-        return $this->hasOne(Films::class, ['id' => 'film_id']);
+        return $this->hasOne(Film::class, ['id' => 'film_id']);
     }
     public function setDatetime($value)
     {
@@ -66,32 +77,34 @@ class Sessions extends \yii\db\ActiveRecord
     }
     public function validateTime()
     {
-        $datetime = strtotime($this->datetime) - 1800;
-        $datetimeEnd = $datetime + $this->film->duration * 60 + 1800;
-
+        $datetime = strtotime($this->datetime) - self::SESSION_INTERVAL;
+        $datetimeEnd = strtotime($this->datetime) + $this->film->duration * 60 + self::SESSION_INTERVAL;
         $startTime = date('Y-m-d H:i:s',$datetime - 6*3600);
         $endTime = date('Y-m-d H:i:s',$datetime + 6*3600);
         $preSessions = self::find()
             ->where(['between', 'datetime', $startTime, $endTime])
-            ->andWhere(['!=', 'id', $this->id])
+            ->andWhere(['!=', 'id', (int)$this->id])
             ->all();
-        if (is_countable($preSessions)) {
+        if (!empty($preSessions)) {
             foreach ($preSessions as $session) {
                 $sessionStart = strtotime($session->datetime);
                 $filmDuration = ($session->film->duration)*60;
                 $sessionEnd = $sessionStart + $filmDuration;
-                if ($datetime > $sessionStart AND $datetime < $sessionEnd) {
+
+                if ($sessionStart < $datetime && $datetime < $sessionEnd) {
                     return false;
                 }
-
-                if ( $datetimeEnd > $sessionStart AND $datetimeEnd < $sessionEnd) {
-
+                if ($sessionStart < $datetimeEnd && $datetimeEnd < $sessionEnd) {
                     return false;
                 }
-
+                if ($datetime < $sessionStart && $sessionStart < $datetimeEnd) {
+                    return false;
+                }
+                if ($datetime < $sessionEnd && $sessionEnd < $datetimeEnd) {
+                    return false;
+                }
             }
         }
-
         return true;
     }
 }

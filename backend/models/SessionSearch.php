@@ -4,19 +4,19 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Sessions;
+use backend\models\Session;
 
 /**
- * SessionsSearch represents the model behind the search form of `backend\models\Sessions`.
+ * SessionSearch represents the model behind the search form of `backend\models\Session`.
  */
-class SessionsSearch extends Sessions
+class SessionSearch extends Session
 {
     /**
      * {@inheritdoc}
      */
     public function attributes()
     {
-        return array_merge(parent::attributes(), ['film.title']);
+        return array_merge(parent::attributes(), ['film.title', 'film.duration']);
     }
     public function rules()
     {
@@ -45,9 +45,9 @@ class SessionsSearch extends Sessions
      */
     public function search($params)
     {
-        $query = Sessions::find();
+        $query = Session::find();
         $query->joinWith(['film' => function ($query) {
-            $query->from(['film' => 'films']);
+            $query->from(['film' => 'film']);
         }]);
         // add conditions that should always apply here
 
@@ -55,10 +55,16 @@ class SessionsSearch extends Sessions
             'query' => $query,
             'sort'  => ['defaultOrder' => ['datetime' => SORT_DESC]],
         ]);
-        $dataProvider->sort->attributes['film.title'] = [
-            'asc' => ['film.title' => SORT_ASC],
-            'desc' => ['film.title' => SORT_DESC]
-        ];
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'film.title' => [
+                    'asc' => ['film.title' => SORT_ASC],
+                    'desc' => ['film.title' => SORT_DESC]
+                ],
+            'film.duration' => [
+                'asc' => ['film.duration' => SORT_ASC],
+                'desc' => ['film.duration' => SORT_DESC]
+            ]
+        ]);
         $this->load($params);
 
         if (!$this->validate()) {

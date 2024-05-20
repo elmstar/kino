@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Sessions $model */
+/** @var backend\models\Session $model */
 
 
 $this->params['breadcrumbs'][] = ['label' => 'Сеансы', 'url' => ['index']];

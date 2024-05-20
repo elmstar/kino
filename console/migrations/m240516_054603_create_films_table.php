@@ -3,7 +3,7 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%films}}`.
+ * Handles the creation of table `{{%film}}`.
  */
 class m240516_054603_create_films_table extends Migration
 {
@@ -12,7 +12,7 @@ class m240516_054603_create_films_table extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('{{%films}}', [
+        $this->createTable('{{%film}}', [
             'id' => $this->primaryKey(),
             'title' => $this->string(128),
             'photo' => $this->string(4)->defaultValue(''),
@@ -27,6 +27,6 @@ class m240516_054603_create_films_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%films}}');
+        $this->dropTable('{{%film}}');
     }
 }

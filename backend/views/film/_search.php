@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\SessionsSearch $model */
+/** @var backend\models\FilmSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="sessions-search">
+<div class="films-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -20,11 +20,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'film_id') ?>
+    <?= $form->field($model, 'title') ?>
 
-    <?= $form->field($model, 'datetime') ?>
+    <?= $form->field($model, 'photo') ?>
 
-    <?= $form->field($model, 'price') ?>
+    <?= $form->field($model, 'description') ?>
+
+    <?= $form->field($model, 'age') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

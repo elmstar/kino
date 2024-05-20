@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Sessions $model */
+/** @var backend\models\Session $model */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Сеансы', 'url' => ['index']];

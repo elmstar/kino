@@ -2,20 +2,19 @@
 
 namespace backend\controllers;
 
-use backend\models\Films;
-use backend\models\FilmsSearch;
+use backend\models\Session;
+use backend\models\SessionSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
- * FilmsController implements the CRUD actions for Films model.
+ * SessionController implements the CRUD actions for Session model.
  */
-class FilmsController extends Controller
+class SessionController extends Controller
 {
-    public $title = 'Фильмы';
+    public $title = 'Сеансы';
     /**
      * @inheritDoc
      */
@@ -54,13 +53,13 @@ class FilmsController extends Controller
     }
 
     /**
-     * Lists all Films models.
+     * Lists all Session models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new FilmsSearch();
+        $searchModel = new SessionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -70,7 +69,7 @@ class FilmsController extends Controller
     }
 
     /**
-     * Displays a single Films model.
+     * Displays a single Session model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -78,45 +77,34 @@ class FilmsController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $this->title = 'Карточка фильма "' . $model->title . '"';
+        $this->title = 'Просмотр карточки ' . \Yii::$app->formatter->asDate($model->datetime, "php:d.m.Y H:i:s");
         return $this->render('view', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Creates a new Films model.
+     * Creates a new Session model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Films();
+        $model = new Session();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
-                if ($model->duration < 10)
-                    $model->duration = 10;
-                $testSave = $model->save();
-                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-                if ($model->imageFile) {
-                    $testUpload = $model->upload();
-                    if ($testUpload)
-                        return $this->redirect(['view', 'id' => $model->id]);
-                } else if ($testSave)
-                    return $this->redirect(['view', 'id' => $model->id]);
-            }
+            $this->saveWrapper($model, $this->request->post());
         } else {
             $model->loadDefaultValues();
         }
-        $this->title = 'Добавление фильма';
+        $this->title = 'Добавление сеанса';
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing Films model.
+     * Updates an existing Session model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -126,28 +114,25 @@ class FilmsController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            if ($model->duration < 10)
-                $model->duration = 10;
-            $testSave = $model->save();
-
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            if ($model->imageFile) {
-                $testUpload = $model->upload();
-                if ($testUpload) {
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
-            } else if($testSave)
+        if ($this->request->isPost) {
+            $this->saveWrapper($model, $this->request->post());
+            $post = $this->request->post();
+            $model->load($post);
+            $model->setDatetime($post['Session']['datetime']);
+            if ($model->validateTime()) {
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else
+                \Yii::$app->session->setFlash('error', 'КИносеансы пересекаются по времени');
         }
-        $this->title = 'Редактирование фильма "' . $model->title . '"';
+        $this->title = 'Редактирование сеанса ' . \Yii::$app->formatter->asDate($model->datetime, "php:d.m.Y H:i:s");
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing Films model.
+     * Deletes an existing Session model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -161,18 +146,30 @@ class FilmsController extends Controller
     }
 
     /**
-     * Finds the Films model based on its primary key value.
+     * Finds the Session model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Films the loaded model
+     * @return Session the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Films::findOne(['id' => $id])) !== null) {
+        if (($model = Session::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function saveWrapper($model, $post)
+    {
+        $model->load($post);
+        $model->setDatetime($post['Session']['datetime']);
+        if ($model->validateTime()) {
+            $testSave = $model->save();
+            if ($testSave)
+                return $this->redirect(['view', 'id' => $model->id]);
+        } else
+            \Yii::$app->session->setFlash('error', 'Киносеансы пересекаются по времени');
     }
 }

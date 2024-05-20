@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\Url;
+
 /** @var yii\web\View $this */
 
 $this->title = 'My Yii Application';
@@ -22,14 +24,14 @@ $this->title = 'My Yii Application';
 
                 <p>Сюда заносим данные о фильмах</p>
 
-                <p><a class="btn btn-outline-secondary" href="<?= Yii::$app->request->hostInfo ?>/backend/web/films">Фильмы</a></p>
+                <p><a class="btn btn-outline-secondary" href="<?= Url::toRoute(['film/index']) ?>">Фильмы</a></p>
             </div>
             <div class="col-lg-4">
                 <h2>Сеансы</h2>
 
                 <p>Настройка сеансов</p>
 
-                <p><a class="btn btn-outline-secondary" href="<?= Yii::$app->request->hostInfo ?>/backend/web/sessions">Сеансы</a></p>
+                <p><a class="btn btn-outline-secondary" href="<?= Url::toRoute(['session/index']) ?>">Сеансы</a></p>
             </div>
             <div class="col-lg-4">
                 <h2>Heading</h2>

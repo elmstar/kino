@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Sessions $model */
+/** @var backend\models\Session $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -16,7 +16,7 @@ use kartik\datetime\DateTimePicker;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'film_id')->dropDownList(
-        \backend\models\Films::getDropDownListFilms(),
+        \backend\models\Film::getDropDownListFilms(),
         ['prompt' => 'Выберите фильм']
     ) ?>
 
@@ -24,7 +24,7 @@ use kartik\datetime\DateTimePicker;
     <div class="form-group field-news-date">
         <label class="control-label" >Дата начала показа</label>
         <?= DateTimePicker::widget([
-            'name' => 'Sessions[begin_date]',
+            'name' => 'Session[datetime]',
             'language' => 'ru',
             'options' => ['placeholder' => 'Выберите дату ...'
             ],
@@ -34,7 +34,7 @@ use kartik\datetime\DateTimePicker;
             'pluginOptions' => [
                 'ranges' => true,
                 'format' => 'd.M.y H:i:s',
-                'singleDatePicker' => false,
+                'singleDatePicker' => true,
                 'autoclose' => true
 
             ]

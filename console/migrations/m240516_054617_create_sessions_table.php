@@ -3,7 +3,7 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%sessions}}`.
+ * Handles the creation of table `{{%session}}`.
  */
 class m240516_054617_create_sessions_table extends Migration
 {
@@ -12,17 +12,17 @@ class m240516_054617_create_sessions_table extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('{{%sessions}}', [
+        $this->createTable('{{%session}}', [
             'id' => $this->primaryKey(),
             'film_id'   => $this->integer()->notNull(),
             'datetime' => $this->timestamp(),
             'price'     => $this->decimal(9,2)
         ]);
         $this->addForeignKey(
-            'fk-sessions-film_id',
-            'sessions',
+            'fk-session-film_id',
+            'session',
             'film_id',
-            'films',
+            'film',
             'id',
             'CASCADE'
         );
@@ -33,6 +33,6 @@ class m240516_054617_create_sessions_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%sessions}}');
+        $this->dropTable('{{%session}}');
     }
 }

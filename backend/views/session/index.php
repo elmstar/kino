@@ -1,13 +1,13 @@
 <?php
 
-use backend\models\Sessions;
+use backend\models\Session;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var backend\models\SessionsSearch $searchModel */
+/** @var backend\models\SessionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 
@@ -32,12 +32,10 @@ $this->params['breadcrumbs'][] = $this->context->title;
             'id',
             'film.title',
             'datetime',
+            'film.duration',
             'price',
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Sessions $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                'class' => ActionColumn::class,
             ],
         ],
     ]); ?>

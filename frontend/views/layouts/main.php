@@ -40,7 +40,7 @@ AppAsset::register($this);
         ['label' => 'Contact', 'url' => ['/site/contact']],
     ];
     if (
-        isset(Yii::$app->user->identity->status) AND
+        isset(Yii::$app->user->identity->status) &&
         Yii::$app->user->identity->status > 9
     ) {
         $menuItems[] = [

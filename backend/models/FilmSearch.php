@@ -4,12 +4,12 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Films;
+use backend\models\Film;
 
 /**
- * FilmsSearch represents the model behind the search form of `backend\models\Films`.
+ * FilmSearch represents the model behind the search form of `backend\models\Film`.
  */
-class FilmsSearch extends Films
+class FilmSearch extends Film
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class FilmsSearch extends Films
      */
     public function search($params)
     {
-        $query = Films::find();
+        $query = Film::find();
 
         // add conditions that should always apply here
 

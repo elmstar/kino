@@ -3,13 +3,12 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Sessions $model */
+/** @var backend\models\Film $model */
 
-
-$this->params['breadcrumbs'][] = ['label' => 'Сеансы', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Фильмы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->context->title;
 ?>
-<div class="sessions-create">
+<div class="films-create">
 
     <h1><?= Html::encode($this->context->title) ?></h1>
 
