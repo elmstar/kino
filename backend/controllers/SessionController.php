@@ -116,14 +116,6 @@ class SessionController extends Controller
 
         if ($this->request->isPost) {
             $this->saveWrapper($model, $this->request->post());
-            $post = $this->request->post();
-            $model->load($post);
-            $model->setDatetime($post['Session']['datetime']);
-            if ($model->validateTime()) {
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else
-                \Yii::$app->session->setFlash('error', 'КИносеансы пересекаются по времени');
         }
         $this->title = 'Редактирование сеанса ' . \Yii::$app->formatter->asDate($model->datetime, "php:d.m.Y H:i:s");
         return $this->render('update', [
@@ -171,5 +163,8 @@ class SessionController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
         } else
             \Yii::$app->session->setFlash('error', 'Киносеансы пересекаются по времени');
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 }

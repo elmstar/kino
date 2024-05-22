@@ -19,6 +19,7 @@ use yii\web\UploadedFile;
  */
 class Film extends \yii\db\ActiveRecord
 {
+    public const UPLOAD_CATALOG = '/web/upload/film';
     public $imageFile;
     /**
      * {@inheritdoc}
@@ -69,6 +70,16 @@ class Film extends \yii\db\ActiveRecord
     public function upload()
     {
         if ($this->validate()) {
+            if (!file_exists(Yii::getAlias('@frontend').self::UPLOAD_CATALOG))
+                mkdir(Yii::getAlias('@frontend').self::UPLOAD_CATALOG, 0744,true);
+            if (!is_link(Yii::getAlias('@backend').self::UPLOAD_CATALOG)) {
+                if (!file_exists(Yii::getAlias('@backend').'/web/upload'))
+                    mkdir(Yii::getAlias('@backend').'/web/upload', 0744,true);
+                symlink(
+                    Yii::getAlias('@frontend').self::UPLOAD_CATALOG,
+                    Yii::getAlias('@backend').self::UPLOAD_CATALOG
+                );
+            }
             $this->imageFile->saveAs('../../frontend/web/upload/film/' . $this->id . '.' . $this->imageFile->extension);
             $this->photo = $this->imageFile->extension;
             $this->imageFile = '';
@@ -102,8 +113,6 @@ class Film extends \yii\db\ActiveRecord
     }
     public static function getDropDownListFilms()
     {
-        return ArrayHelper::map(self::find()
-            ->select(['id','title'])
-            ->asArray()->all(), 'id', 'title');
+        return self::find()->select('title')->indexBy('id')->column();
     }
 }

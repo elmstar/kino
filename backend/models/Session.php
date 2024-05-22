@@ -38,7 +38,7 @@ class Session extends \yii\db\ActiveRecord
             [['film_id', 'datetime', 'price'], 'required'],
             [['film_id'], 'integer'],
             [['datetime'], 'safe'],
-            [['price'], 'number', 'numberPattern' => '/^\s*[-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
+            [['price'], 'number', 'max' => 1000000, 'numberPattern' => '/^\s*[-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
             [['film_id'], 'exist', 'skipOnError' => true, 'targetClass' => Film::class, 'targetAttribute' => ['film_id' => 'id']],
         ];
     }
@@ -74,6 +74,7 @@ class Session extends \yii\db\ActiveRecord
     public function setDatetime($value)
     {
         $this->datetime = ($value) ? date('Y-m-d H:i:s', strtotime($value)) : '';
+        dd($this->datetime);
     }
     public function validateTime()
     {
